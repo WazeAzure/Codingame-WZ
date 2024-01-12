@@ -70,22 +70,28 @@ class Player {
                 // first pods ticks
                 Pair p = new Pair(x, y);
                 vp.add(p);
+
+                currentX = x;
+                currentY = y;
             }
 
-            if(isChanged(nextCheckpointX, nextCheckpointY)){
-                pods += 1;
-                
-                Pair p = new Pair(currentX, currentY);
-                vp.add(p);
-
-                if(isInRegion(nextCheckpointX, nextCheckpointY, vp.get(0).x, vp.get(0).y, 600)){
-                    pods = 1;
-                    laps += 1;
-                }
-            }
+            
 
             if(laps == 1){
-                
+                if(isChanged(nextCheckpointX, nextCheckpointY)){
+                    pods += 1;
+                    
+                    Pair p = new Pair(currentX, currentY);
+                    vp.add(p);
+
+                    currentX = nextCheckpointX;
+                    currentY = nextCheckpointY;
+
+                    if(isInRegion(nextCheckpointX, nextCheckpointY, vp.get(0).x, vp.get(0).y, 600)){
+                        pods = 1;
+                        laps += 1;
+                    }
+                }
 
                 // Write an action using System.out.println()
                 // To debug: System.err.println("Debug messages...");
@@ -95,15 +101,16 @@ class Player {
                     thrust = 100;
                 }
 
-                if(isChanged(nextCheckpointX, nextCheckpointY)){
+                // if(isChanged(nextCheckpointX, nextCheckpointY)){
+                if(nextCheckpointDist < 1000){
                     currentTick = i;
-                    currentX = nextCheckpointX;
-                    currentY = nextCheckpointY;
+                    // currentX = nextCheckpointX;
+                    // currentY = nextCheckpointY;
                     acc = true;
                 }
 
                 if(i - currentTick >= 0 && i - currentTick < 3 && acc){
-                    thrust = 65 - (5 * (i-currentTick));
+                    thrust = 80 - (8 * (i-currentTick));
                 } else {
                     acc = false;
                 }
@@ -128,8 +135,12 @@ class Player {
                 }
             } else {
                 // exquisite move
-               
-                Pair temp = newXY(nextCheckpointX, nextCheckpointY, vp.get((pods + 2) % vp.size()).x, vp.get((pods + 2) % vp.size()).y);
+                for(int awikwok=0; awikwok<vp.size(); awikwok++){
+                    System.err.printf("(%d %d)\n", vp.get(awikwok).x, vp.get(awikwok).y);
+                }
+                System.err.printf("\n");
+                System.err.printf("%d %d %d %d\n", nextCheckpointX, nextCheckpointY, vp.get((pods + 1) % vp.size()).x, vp.get((pods + 1) % vp.size()).y);
+                Pair temp = newXY(nextCheckpointX, nextCheckpointY, vp.get((pods + 1) % vp.size()).x, vp.get((pods + 1) % vp.size()).y);
                 int newCheckpointX = nextCheckpointX + temp.x;
                 int newCheckpointY = nextCheckpointY + temp.y;
 
@@ -143,12 +154,12 @@ class Player {
 
                 if(isChanged(nextCheckpointX, nextCheckpointY)){
                     currentTick = i;
-                    currentX = nextCheckpointX;
-                    currentY = nextCheckpointY;
+                    // currentX = nextCheckpointX;
+                    // currentY = nextCheckpointY;
                     acc = true;
                 }
 
-                if(i - currentTick >= 0 && i - currentTick < 3 && acc){
+                if(i - currentTick >= 0 && i - currentTick < 4 && acc){
                     thrust = 65 - (5 * (i-currentTick));
                 } else {
                     acc = false;
